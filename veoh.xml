@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site site="http://www.zomganime.com" plugin="http://www.veoh.com/videodetails2.swf" initialState="buffering" version="1.0">	
+
+	<crop x="0" y="0" width="540" height="404" />
+	<seekbar type="simple">
+	  <start x="77" y="800" />
+	  <end   x="371" y="800" />
+	<played>
+	   <color rgb="c3c3c3" />
+	   <color rgb="ffffff" />
+	 </played>
+	</seekbar>
+
+	<condition name="paused">
+		<and>
+			<color x="25" y="-9" rgb="808080" />
+			<color x="25" y="-24" rgb="808080" />
+			<color x="36" y="-16" rgb="808080" />
+		</and>
+	</condition>
+
+	<!-- BUFFERING -->
+	<state name="buffering">
+		<event>
+			<condition>
+				<condition name="paused"/>
+			</condition>
+			<action>
+				<click x="30" y="-15" />
+				<goto state="playing"/>
+			</action>
+		</event>
+	</state>
+	
+		<!-- PLAYING -->
+	<state name="playing">
+		
+		<!-- Click to pause -->
+		<event>
+			<condition>
+				<command name="pause" />
+			</condition>
+			<action>
+				<click x="30" y="-15" />
+				<goto state="paused" />
+			</action>
+		</event>
+
+		<!-- Video ends -->
+		<event>
+			<condition>
+				<color x="379" y="-22" rgb="8c8c8c" />
+			</condition>
+			<action>
+				<pause time="2000" />
+				<goto state="end" />
+			</action>
+		</event>
+	</state>
+
+	<!-- PAUSED -->
+	<state name="paused">
+		<event>
+			<condition>
+				<command name="play" />
+			</condition>
+			<action>
+				<click x="30" y="-15" />
+				<goto state="playing" />
+			</action>
+		</event>
+	</state>
+
+</site>
