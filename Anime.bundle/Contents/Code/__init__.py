@@ -31,7 +31,6 @@ def HandleVideosRequest(pathNouns, count):
 
   devMode = True
 
-
   if len(Plugin.Dict) == 0 :    
     Plugin.Dict['tv'] = dict()
     Plugin.Dict['movie'] = dict()
@@ -94,25 +93,27 @@ def HandleVideosRequest(pathNouns, count):
       dirItem = WebVideoItem(getFlashUrl(path), showName, show['description'], '', show['image'])
       dir.AppendItem(dirItem)
     elif pathNouns[0] == 'tv' :
-      vids = XML.ElementFromURL(path, True).xpath('//ul[@class="catg-post-list"]//li/a')
+      vids = XML.ElementFromURL(path, True).xpath('//ol[@class="list"]//li/a') #'//ul[@class="catg-post-list"]//li/a')
       vids.reverse()
       for vid in vids:
-        title = re.sub(r'.*(Episode.*)', r'\1', vid.text)
+        Log.Add(vid.text)
+        if vid.text != None : 
+          title = re.sub(r'.*(Episode.*)', r'\1', vid.text)
 
-        try : 
-          episodeNumber = re.search('\d+\.?\d*',title).group(0)
-          theEpisode = Plugin.Dict[pathNouns[0]][showName]['episodes'][episodeNumber.lstrip('0')]
-          longTitle = theEpisode['name']
-          duration = theEpisode['duration']
-        except :
-          longTitle = title
-          duration = ''
+          try : 
+            episodeNumber = re.search('\d+\.?\d*',title).group(0)
+            theEpisode = Plugin.Dict[pathNouns[0]][showName]['episodes'][episodeNumber.lstrip('0')]
+            longTitle = theEpisode['name']
+            duration = theEpisode['duration']
+          except :
+            longTitle = title
+            duration = ''
 
-        pageUrl = vid.get('href')
-        flashUrl = getFlashUrl(pageUrl)
+          pageUrl = vid.get('href')
+          flashUrl = getFlashUrl(pageUrl)
 
-        dir.AppendItem(WebVideoItem(flashUrl, longTitle, '', str(duration), ''))
-      # Log.Add((flashUrl, longTitle, '', str(duration), ''))
+          dir.AppendItem(WebVideoItem(flashUrl, longTitle, '', str(duration), ''))
+        # Log.Add((flashUrl, longTitle, '', str(duration), ''))
 
   return dir.ToXML()
 
